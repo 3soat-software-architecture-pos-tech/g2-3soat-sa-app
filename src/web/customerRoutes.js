@@ -40,6 +40,32 @@ export default function customerRoutes(express) {
 		//schema: { $ref: "#/definitions/AddCustomer" }
     );
 
+		router.route('/confirmationCode').post(controller.confirmUser,
+			// #swagger.tags = ['Customer']
+			// #swagger.description = 'Endpoint to validate a customer on cognito.'
+	
+			/* #swagger.parameters['validateCustomer'] = {
+								 in: 'body',
+								 description: 'Information customer cognito.',
+								 required: true,
+								 schema: { $ref: "#/definitions/ValidateCustomer" }
+					} */
+			//schema: { $ref: "#/definitions/ValidateCustomer" }
+		);
+
+		router.route('/authenticateUser').post(controller.authenticateUser,
+			// #swagger.tags = ['Customer']
+			// #swagger.description = 'Endpoint to authenticate a customer on cognito.'
+	
+			/* #swagger.parameters['validateCustomer'] = {
+								 in: 'body',
+								 description: 'Information customer cognito.',
+								 required: true,
+								 schema: { $ref: "#/definitions/AuthenticateCustomer" }
+					} */
+			//schema: { $ref: "#/definitions/AuthenticateCustomer" }
+		);
+
   //PUT ENDPOINTS
   router.route('/:id').put(controller.updateCustomerById,
     // #swagger.tags = ['Customer']

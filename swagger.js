@@ -33,8 +33,14 @@ const document = {
             $cpf: "123.456.789-x",
             $email: "jhon@example.com",
             $phone: "55119978654321"
-        }
-        ,
+        },
+				ValidateCustomer: {
+					$confirmationCode: "875173",
+					$email: "jhon@example.com",
+				},
+				AuthenticateCustomer: {
+					$email: "jhon@example.com",
+				},
         AddCategory: {
             $categoryName: "Category A",
             $description: "Category description"

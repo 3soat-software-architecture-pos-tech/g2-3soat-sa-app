@@ -23,13 +23,12 @@ export default function customerRepositoryMySqlDB() {
 							return db.rollback(() => reject(commitError));
 						}
 	
-	
 						const insertId = result.insertId;
 						const nameCustomer = customerEntity.getName();
 						const cpf = customerEntity.getCpf();
 						const email = customerEntity.getEmail();
 						const phone = customerEntity.getPhone();
-						return resolve({ "Customer added ": insertId, "Name ": nameCustomer, "CPF": cpf, "Email": email, "Phone": phone });
+						return resolve({ "customerAdded": insertId, "name": nameCustomer, "cpf": cpf, "email": email, "phone": phone });
 					});
 				});
 			});

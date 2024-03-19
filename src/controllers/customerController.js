@@ -3,13 +3,12 @@ import useCaseGetAll from '../use_cases/customer/getAll.js'
 import useCasefindById from '../use_cases/customer/findById.js';
 import useCasedelete from '../use_cases/customer/deleteById.js'
 import useCaseupdateById from '../use_cases/customer/updateById.js';
-import useCasefindByCPF from '../use_cases/customer/findByCPF.js'
+import useCasefindByCPF from '../use_cases/customer/findByCPF.js';
+import useCaseConfirmationCode from '../use_cases/customer/validateUser.js';
+import useCaseAuthenticateUser from '../use_cases/customer/authenticateUser.js';
+import { testAuthenticateUser, testRegisterUser } from '../api/services/cognito.js';
 
 export default function customerController() {
-  
-//  const dbRepository = customerRepository(customerRepositoryMongoDB());
-
-console.log('controller customer')
   
   const fetchAllCustomer = (req, res, next) => {
     useCaseGetAll()
@@ -23,11 +22,8 @@ console.log('controller customer')
       .catch((error) => next(error));
   };
 
-
 	const addNewCustomer = (req, res, next) => {
 		console.log('controler customer');
-    //console.log('repositorio-> ',dbRepository);
-		//console.log('Request body:', req.body);
     const { name, cpf, email, phone, skype } = req.body;
 
     useCaseCreate(
@@ -38,17 +34,46 @@ console.log('controller customer')
       Date(),
       Date()
     )
-    .then((customer) => res.json(customer))
-    .catch((error) => res.json(next(`${error.message} - Customer creation failed`)));
-		/*.then((customer) => {
-			return res.json('Customer created successfully');
+    .then((customer) => {
+			console.log('controler customer ->',customer);
+			const email = customer.email;
+			if(email) {
+				testRegisterUser(email).then((response) => {
+					console.log(response);
+				}).catch((error) => {
+					console.error(error);
+				});
+			}
+			res.json(customer)
 		})
-		.catch((error) => res.json(`${error.message} - Customer creation failed`));*/
+    .catch((error) => res.json(next(`${error.message} - Customer creation failed`)));
   };
 
+	const confirmUser = async (req, res, next) => {
+		const { confirmationCode, email } = req.body;
+		
+		await useCaseConfirmationCode(confirmationCode, email)
+			.then((response) => {
+				return res.json(response.data.message);
+			})
+			.catch((error) => {
+				return res.json(error.response.data.message);
+			});
+	};
+
+	const authenticateUser = async (req, res, next) => {
+		const { email } = req.body;
+		await useCaseAuthenticateUser(email)
+		.then((response) => {
+			console.log(response);
+			return res.json(response.data);
+		})
+		.catch((error) => {
+			return res.json({status: error.response.status, message: error.response.data.message});
+		});
+	}
+
   const fetchCustomerById = (req, res, next) => {
-    //console.log('params by id-> ',req.params.id);
-    //console.log('repository -> ',dbRepository);
     useCasefindById(req.params.id)
       .then((customer) => {
         if (!customer) {
@@ -61,19 +86,23 @@ console.log('controller customer')
   };
 
   const fetchCustomerByCPF = (req, res, next) => {
-    //console.log('params by id-> ',req.body);
-    //return res.json('fdsfa');
-    //console.log('repository -> ',dbRepository);
-    //const cpf = req.query.cpf;
-    //req.params.cpf
-    console.log('cpf----->',req.params.cpf)
     useCasefindByCPF(req.params.cpf)
-      .then((customer) => {
+      .then(async(customer) => {
         if (!customer) {
-          //throw new Error(`No customer found with id: ${req.params.id}`);
           res.json(`No customer found with cpf: ${req.params.cpf}`);
         }
-        res.json(customer);
+				const email = customer[0].email;
+				let authResponse;
+				if(email) {
+					authResponse = await testAuthenticateUser(email).then((response) => {
+						return response.data;
+					}).catch((error) => {
+						console.error('error authenticate user ->',{status: error.response.status, message: error.response.data.message});
+						return {status: error.response.status, message: error.response.data.message};
+					});
+				}
+				const customerData = customer[0]
+        res.json({...customerData, ...authResponse});
       })
       .catch((error) => next(res.json(error)));
   };
@@ -102,13 +131,14 @@ console.log('controller customer')
       .catch((error) => next(error));
       
   };
-  //console.log('Controller final',dbRepository);
   return {
 		addNewCustomer,
     fetchAllCustomer,
     fetchCustomerById,
     updateCustomerById,
     deleteCustomerById,
-    fetchCustomerByCPF
+    fetchCustomerByCPF,
+		confirmUser,
+		authenticateUser
   };
 }

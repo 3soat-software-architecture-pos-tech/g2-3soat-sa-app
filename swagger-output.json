@@ -79,6 +79,54 @@
         }
       }
     },
+    "/customer/confirmationCode": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "description": "Endpoint to validate a customer on cognito.",
+        "parameters": [
+          {
+            "name": "validateCustomer",
+            "in": "body",
+            "description": "Information customer cognito.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ValidateCustomer"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/customer/authenticateUser": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "description": "Endpoint to authenticate a customer on cognito.",
+        "parameters": [
+          {
+            "name": "validateCustomer",
+            "in": "body",
+            "description": "Information customer cognito.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AuthenticateCustomer"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/customer/{id}": {
       "put": {
         "tags": [
@@ -686,6 +734,35 @@
         "cpf",
         "email",
         "phone"
+      ]
+    },
+    "ValidateCustomer": {
+      "type": "object",
+      "properties": {
+        "confirmationCode": {
+          "type": "string",
+          "example": "875173"
+        },
+        "email": {
+          "type": "string",
+          "example": "jhon@example.com"
+        }
+      },
+      "required": [
+        "confirmationCode",
+        "email"
+      ]
+    },
+    "AuthenticateCustomer": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "jhon@example.com"
+        }
+      },
+      "required": [
+        "email"
       ]
     },
     "AddCategory": {

@@ -1,11 +1,8 @@
 import axios from 'axios';
 
-const axiosClient = axios.create({
-  baseURL: `https://api.mercadopago.com/`,
-  headers: {
-    'Content-Type': 'application/json',
-		'Authorization': `Bearer ${process.env.TOKEN_VENDEDOR_MP}`
-  }
+const axiosClient = (baseURL, headers) => axios.create({
+  baseURL: baseURL,
+  headers: headers
 });
 
 export default axiosClient;
