@@ -43,6 +43,12 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
