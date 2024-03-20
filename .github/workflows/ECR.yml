@@ -32,7 +32,7 @@ jobs:
         run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/app:latest .
+        run: docker build --build-arg MERCADOPAGO_TOKEN=${{ secrets.MERCADOPAGO_TOKEN }} --build-arg TOKEN_VENDEDOR_MP=${{ secrets.TOKEN_VENDEDOR_MP }} --build-arg WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} --build-arg DB_RDS_HOST=${{ secrets.DB_RDS_HOST }} --build-arg DB_RDS_USER=${{ secrets.DB_RDS_USER }} --build-arg DB_RDS_PASS=${{ secrets.DB_RDS_PASS }} --build-arg DB_RDS_DATABASE_NAME=${{ secrets.DB_RDS_DATABASE_NAME }} -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/app:latest .
 
       - name: Push Docker image to ECR
         run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/app:latest
