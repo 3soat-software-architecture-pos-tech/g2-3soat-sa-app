@@ -1,6 +1,6 @@
 import axiosClient from "../apiClient.js";
 
-const API_URL = 'https://5encpyxick.execute-api.us-east-2.amazonaws.com/prod/';
+const API_URL = 'https://1tjiofpdf4.execute-api.us-east-1.amazonaws.com/prod/';
 
 /**
  * Register a new user.
