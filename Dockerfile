@@ -17,7 +17,7 @@ EXPOSE 3000
 CMD ["npm", "run", "dev", \
     "&&", \
     "whcli", "forward", \
-    "--token=0542895c-7735-41b7-bfcb-de50fe59b2c9", \
-    "--api-key=0542895c-7735-41b7-bfcb-de50fe59b2c9", \
-    "--target=http://localhost:80/webhook"]
+    "--token=f70e7d6a-9a12-4b7e-bb8d-62edb4f957", \
+    "--api-key=f70e7d6a-9a12-4b7e-bb8d-62edb4f957", \
+    "--target=http://localhost/webhook"]
 
