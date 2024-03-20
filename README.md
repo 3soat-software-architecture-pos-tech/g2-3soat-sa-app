@@ -54,21 +54,17 @@ Nosso banco de dados já está populado, no entanto, caso deseje criar novos reg
 - Criar produto associado à categoria
 - Criar pedido associado à cliente e produto
 
-### Link para o vídeo
-
-https://youtu.be/QMHumtJ6DvQ
-
 
 ## Team
  - Turma: 3SOAT
  - Grupo: 2
 
-    [Bruna Carlota](brunacarlota@gmail.com)
+   [André Felipe](andrefelipegodoi@gmail.com)
+   
+   [Bruna Carlota](brunacarlota@gmail.com)
 
-    [Carlos Tofoli](henrique.tofoli@hotmail.com)
+   [Carlos Tofoli](henrique.tofoli@hotmail.com)
 
-    [Valdeir Jesus](valdeir_014@hotmail.com)
+   [Guilherme Oliveira](guilherme.oliveira182@yahoo.com.br)
 
-		André Felipe
-
-		Guilherme
+   [Valdeir Jesus](valdeir_014@hotmail.com)
