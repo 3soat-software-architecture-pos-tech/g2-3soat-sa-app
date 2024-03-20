@@ -1,11 +1,11 @@
 name: Build and Push Docker Image to ECR
 
 on:
-  push:
-    branches:
-      - main 
   pull_request:
-    branches: [ "main" ]
+    types:
+      - closed
+    branches:
+      - main
 
 jobs:
   build-and-push:
