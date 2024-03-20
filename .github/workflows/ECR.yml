@@ -1,0 +1,50 @@
+name: Build and Push Docker Image to ECR
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}"
+          aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          aws configure set region "${{ secrets.AWS_REGION }}"
+
+      - name: Verify or Create ECR repository
+        run: |
+          aws ecr describe-repositories --repository-names app || aws ecr create-repository --repository-name app
+
+      - name: Login to Amazon ECR
+        run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+      - name: Build Docker image
+        run: docker build --build-arg MERCADOPAGO_TOKEN=${{ secrets.MERCADOPAGO_TOKEN }} --build-arg TOKEN_VENDEDOR_MP=${{ secrets.TOKEN_VENDEDOR_MP }} --build-arg WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} --build-arg DB_RDS_HOST=${{ secrets.DB_RDS_HOST }} --build-arg DB_RDS_USER=${{ secrets.DB_RDS_USER }} --build-arg DB_RDS_PASS=${{ secrets.DB_RDS_PASS }} --build-arg DB_RDS_DATABASE_NAME=${{ secrets.DB_RDS_DATABASE_NAME }} -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/app:latest .
+
+      - name: Push Docker image to ECR
+        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/app:latest
+
+      - name: Set kubeconfig for EKS cluster
+        run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ${{ secrets.AWS_REGION }}
+      
+      - name: Aplly kubernetes hpa
+        run: kubectl apply -f hpa.yml
+
+      - name: Aplly kubernetes service
+        run: kubectl apply -f service.yml
+
+      - name: Apply Kubernetes app
+        run: kubectl apply -f pod_app.yml

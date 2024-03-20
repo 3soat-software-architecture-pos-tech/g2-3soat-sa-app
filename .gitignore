@@ -1,0 +1,9 @@
+node_modules
+
+# config
+.vscode
+
+# secrets
+.env
+.env_local
+.env.local
